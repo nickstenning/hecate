@@ -1,6 +1,13 @@
 from os import environ as env
 import dj_database_url
 
+import warnings
+import exceptions
+warnings.filterwarnings("ignore",
+                        category=exceptions.RuntimeWarning,
+                        module='django.db.backends.sqlite3.base',
+                        lineno=53)
+
 # Django settings for hecate project.
 
 DEBUG = env.get('DJANGO_DEBUG', 'true') == 'true'
