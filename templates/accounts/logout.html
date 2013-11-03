@@ -1,0 +1,15 @@
+{% extends "general.html" %}
+
+{% block title %}Logout{% endblock %}
+{% block body-class %}login{% endblock %}
+
+{% block body %}
+  {% if user.is_authenticated %}
+    <form id='logout-form' method='POST' action='{% url "logout" %}' class='logout'>
+      {% csrf_token %}
+      <button type='submit'>Logout</button>
+    </form>
+  {% else %}
+    <p>Already logged out.</p>
+  {% endif %}
+{% endblock %}

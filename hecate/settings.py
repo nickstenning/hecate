@@ -1,6 +1,11 @@
+# Django settings for hecate project.
+
 from os import environ as env
+import os.path
+
 import dj_database_url
 
+# Silence warnings from ipython/sqlite
 import warnings
 import exceptions
 warnings.filterwarnings("ignore",
@@ -8,7 +13,7 @@ warnings.filterwarnings("ignore",
                         module='django.db.backends.sqlite3.base',
                         lineno=53)
 
-# Django settings for hecate project.
+SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 DEBUG = env.get('DJANGO_DEBUG', 'true') == 'true'
 TEMPLATE_DEBUG = DEBUG
@@ -18,6 +23,19 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+
+if env.get('DJANGO_EMAIL_DEBUG') == 'true':
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+    EMAIL_HOST          = env.get('EMAIL_HOST', 'localhost')
+    EMAIL_PORT          = env.get('EMAIL_PORT', '25')
+    EMAIL_HOST_USER     = env.get('EMAIL_USER', 'mail')
+    EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'mail')
+    EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS') == 'true'
+    DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'noreply@hecate')
+    if env.get('DEFAULT_TO_EMAIL'):
+        DEFAULT_TO_EMAIL = (env.get('DEFAULT_TO_EMAIL'),)
 
 DATABASES = {
     'default': dj_database_url.config(default='sqlite:///development.sqlite3')
@@ -113,9 +131,7 @@ ROOT_URLCONF = 'hecate.urls'
 WSGI_APPLICATION = 'hecate.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(SITE_ROOT, 'templates')
 )
 
 INSTALLED_APPS = (
@@ -133,11 +149,14 @@ INSTALLED_APPS = (
 )
 
 AUTH_USER_MODEL = 'accounts.User'
+LOGIN_REDIRECT_URL = 'homepage'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # Redirect from plain HTTP to HTTPS if not in dev mode
-if not DEBUG:
+if env.get('DJANGO_SECURE') == 'true':
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 7 * 86400
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -146,6 +165,8 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
+else:
+    SECURE_SSL_REDIRECT = False
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
