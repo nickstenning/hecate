@@ -18,9 +18,15 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEBUG = env.get('DJANGO_DEBUG', 'true') == 'true'
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+ADMINS = ()
+
+# Allows setting Django admins from an environment variable of the form:
+#
+#   export DJANGO_ADMINS="John Doe <john@doe.com>, Bob Tables <bob@sqli.com>"
+#
+if env.get('DJANGO_ADMINS'):
+    import email.utils
+    ADMINS = tuple(email.utils.getaddresses([env.get('DJANGO_ADMINS')]))
 
 MANAGERS = ADMINS
 
