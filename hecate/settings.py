@@ -33,14 +33,12 @@ MANAGERS = ADMINS
 if env.get('DJANGO_EMAIL_DEBUG') == 'true':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 elif env.get('MANDRILL_USERNAME'):
-    EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
     EMAIL_HOST = 'smtp.mandrillapp.com'
     EMAIL_PORT = '587'
     EMAIL_HOST_USER = env.get('MANDRILL_USERNAME')
     EMAIL_HOST_PASSWORD = env.get('MANDRILL_APIKEY')
     EMAIL_USE_TLS = 'true'
 else:
-    EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
     EMAIL_HOST = env.get('EMAIL_HOST', 'localhost')
     EMAIL_PORT = env.get('EMAIL_PORT', '25')
     EMAIL_HOST_USER = env.get('EMAIL_USER', 'mail')
