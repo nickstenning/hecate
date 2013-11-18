@@ -5,3 +5,4 @@ django-secure==1.0
 django-webtest==1.7.5
 webtest==2.0.9
 django-smtp-ssl==1.0
+gunicorn
