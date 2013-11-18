@@ -45,9 +45,10 @@ else:
     EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'mail')
     EMAIL_USE_TLS = env.get('EMAIL_USE_TLS', 'true') == 'true'
 
-DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'noreply@hecate')
 if env.get('DEFAULT_TO_EMAIL'):
     DEFAULT_TO_EMAIL = (env.get('DEFAULT_TO_EMAIL'),)
+DEFAULT_FROM_EMAIL = env.get('DEFAULT_FROM_EMAIL', 'noreply@hecate')
+SERVER_EMAIL = env.get('SERVER_EMAIL', 'robots@hecate')
 
 DATABASES = {
     'default': dj_database_url.config(default='sqlite:///development.sqlite3')
